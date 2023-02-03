@@ -1,0 +1,10 @@
+---
+- name: Converge
+  hosts: all
+  tasks:
+    - debug:
+       msg: HIEP HIEP HOERA
+
+    - name: "Include check"
+      include_role:
+         name: "check"

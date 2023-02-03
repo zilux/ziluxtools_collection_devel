@@ -1,0 +1,5 @@
+# just needed if you want to install the collection (not for adjusting stuff)
+---
+collections:
+  - name: git@github.com:zilux/justtest.git#/collections/ansible_collections/zilux/tools
+    type: git

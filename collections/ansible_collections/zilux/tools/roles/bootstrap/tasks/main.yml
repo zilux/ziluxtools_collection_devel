@@ -1,0 +1,49 @@
+---
+# tasks file for roles/basehost
+- name: Start baseline 
+  debug:
+    msg: let's go
+
+- name: add group
+  group:
+    name: "{{ boostrap_user_name }}"
+    gid: "{{ bootstrap_group_id }}" 
+
+- name: add user
+  user:
+    name: "{{ boostrap_user_name }}"
+    uid: "{{ bootstrap_user_id }}" 
+    group: "{{ bootstrap_group_name }}" 
+    groups: wheel
+    shell: /bin/bash
+    password: "{{ bootstrap_password|string | password_hash('sha256', 'mysecretsalt')}}"
+
+- name: install ssh key user harry
+  ansible.posix.authorized_key:
+    user: "{{ boostrap_user_name }}" 
+    state: present
+    key: "{{ lookup('file', 'files/id_rsa.pub') }}"
+
+- name: add user to sudoers file
+  lineinfile:
+    dest: /etc/sudoers
+    state: present
+    regexp: '^%wheel'
+    line: '%wheel ALL=(ALL) NOPASSWD: ALL'
+    validate: visudo -cf %s
+
+- name: update system
+  yum:
+   name: all
+   state: latest
+  failed_when: false
+
+- name: install some rpm's
+  yum:
+    name: "{{ basehost_rpms }}" 
+    state: present
+
+- name: start chronyd
+  service:
+    name: chronyd
+    state: started

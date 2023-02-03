@@ -1,0 +1,65 @@
+---
+# tasks file for roles/env_ansible
+#
+
+- name: install needed rpms 
+  yum:
+   name: "{{ env_ansible_rpms }}"
+
+- name: default python
+  alternatives:
+    name: python
+    path: /usr/bin/python3
+
+- name: create virtual env
+  command:
+    cmd: python -m venv venv
+    creates: /home/{{ env_ansible_user }}/venv
+  become_user: "{{ env_ansible_user }}" 
+  tags:
+    - venv
+
+- name: install ansible in venv
+  pip:
+    name: pip
+    virtualenv: /home/{{ env_ansible_user }}/venv
+    virtualenv_command: /usr/bin/python -m venv venv 
+    state: latest
+  become_user: "{{ env_ansible_user }}" 
+  tags:
+    - venv
+
+- name: Install ansible into the specified (virtualenv)
+  pip:
+    name: "{{ item }}"  
+    virtualenv: /home/{{ env_ansible_user }}/venv
+    virtualenv_command: /usr/bin/python -m venv venv 
+  become: false
+  loop:
+     - ansible-core
+     - ansible-lint
+     - ansible-navigator
+      
+- name: create /home/{{ env_ansible_user }}/.vim
+  file:
+    path: /home/{{ env_ansible_user }}/.vim
+    state: directory
+    mode: 0750 
+    owner: "{{ env_ansible_user }}"
+    group: "{{ env_ansible_user }}"
+  become: false
+
+- name: install dot files 
+  copy:
+    src: "{{ item.src }}"
+    dest: /home/{{ env_ansible_user }}/{{ item.dest }}
+    mode: "{{ item.mode }}" 
+  loop: "{{ env_ansible_dot_files }}"
+
+
+#- name: extract Vim.tar in /home/{{ env_ansible_user }}/.vim    
+#  unarchive:
+#    copy: true
+#    src: files/Vim.tar 
+#    dest: /home/{{ env_ansible_user }}/.vim
+#  register: status_tar

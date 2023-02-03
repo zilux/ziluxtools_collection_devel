@@ -1,0 +1,141 @@
+set encoding=utf-8
+set nocompatible              " required
+filetype off                  " required
+" set nu                      " display line-numbers
+syntax on
+syntax enable
+" colorscheme monokai
+
+
+
+set hlsearch    " highlight all search results
+set ignorecase  " do case insensitive search 
+set incsearch   " show incremental search results as you type
+" set number      " display line number
+set noswapfile  " disable swap file
+
+
+
+" ---- PLUG ---------------------------------
+" Plugins will be downloaded under the specified directory.
+call plug#begin('~/.vim/plugged')
+
+" Declare the list of plugins.
+" syntax checker
+Plug 'nvie/vim-flake8'
+
+Plug 'tmhedberg/SimpylFold'
+
+Plug 'vim-airline/vim-airline'
+
+Plug 'scrooloose/nerdtree'
+
+" better ident for PEP
+Plug 'vim-scripts/indentpython.vim'     
+
+" colorschemes
+Plug 'jnurmine/Zenburn'
+
+Plug 'psf/black', { 'branch': 'stable' }
+
+" Plug 'Valloric/YouCompleteMe'
+
+" List ends here. Plugins become visible to Vim after this call.
+call plug#end()
+" --------------------------------------------
+
+
+" ---- colorscheme from Plug 'jnurmine/Zenburn' ----
+colorscheme zenburn
+
+
+" ----- VIM-FLAKE ---------------------------
+"  pip install flake8
+let g:flake8_show_in_gutter=1  " show
+" 
+" run fake after write
+" autocmd BufWritePost *.py call flake8#Flake8()
+" --------------------------------------------
+
+
+" ---- FOLDING with tmhedberg/SimylFold --- 
+"
+" Enable folding
+set foldmethod=indent
+set foldlevel=99
+" 
+" Enable folding with the spacebar
+nnoremap <space> za
+"
+" Plugin 'tmhedberg/SimpylFold'
+let g:SimpylFold_docstring_preview=1
+" -----------------------------------------
+
+
+" ---- setting pro filetype ---------------
+au BufNewFile,BufRead *.py
+    \ set tabstop=4 |
+    \ set softtabstop=4 |
+    \ set shiftwidth=4 |
+    \ set textwidth=79 |
+    \ set expandtab |
+    \ set autoindent |
+    \ set fileformat=unix |
+
+
+" au BufNewFile,BufRead *.js, *.html, *.css *.yml *.yaml
+"    \ set tabstop=2  | 
+"    \ set softtabstop=2 | 
+"    \ set shiftwidth=2  | 
+" -----------------------------------------
+
+
+autocmd FileType yaml setlocal et ts=2 ai sw=2 nu sts=0
+autocmd FileType yaml colorscheme monokai 
+
+
+
+" Space issues
+au BufRead,BufNewFile *.py,*.pyw,*.c,*.h match BadWhitespace /\s\+$/
+highlight BadWhitespace ctermbg=red guibg=red
+
+
+let g:focuscolour = 0
+function! ToggleFocusColor()
+  if (g:focuscolour)
+    colorscheme desert
+    let g:focuscolour = 0
+  else
+    " colorscheme zenburn 
+    colors peachpuff 
+    let g:focuscolour = 1
+  endif
+endfunc
+
+
+function! ToogleFold()
+     if &foldlevel >= 20
+         "normal! zM<CR> (folds all)
+         set foldlevel=0
+     else
+         "normal! zR<CR> (unfolds everything)
+         set foldlevel=20
+     endif
+ endfunction
+
+
+"split navigations
+nnoremap <C-J> <C-W><C-J>  " contr J
+nnoremap <C-K> <C-W><C-K>
+nnoremap <C-L> <C-W><C-L>
+nnoremap <C-H> <C-W><C-H>
+
+
+
+nnoremap <F9> :Black<CR>
+nnoremap <F8> :call flake8#Flake8()<CR>
+nnoremap <silent> <F5> :call ToggleFocusColor()<CR>
+nnoremap <F4> :NERDTreeToggle<CR>
+nnoremap <silent> <F3> :call ToogleFold()<CR>
+nnoremap <F2> :set nonumber!<CR>  " toggle number
+

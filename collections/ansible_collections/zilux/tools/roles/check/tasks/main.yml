@@ -1,0 +1,18 @@
+---
+# tasks file for roles/check
+
+- name: Gather some facts 
+  gather_hz_facts:
+  register: hz_facts 
+
+- debug: 
+    var: hz_facts
+  when:
+    - (ansible_facts.my_errors|length) != 0
+
+- name: check if all facts are fine
+  assert:
+    that:
+      #- (ansible_facts.my_errors|length) < 1 
+      - not ansible_facts.my_errors is any 
+    fail_msg: System {{ inventory_hostname }} need some checking {{ ansible_facts.my_errors }}

@@ -1,0 +1,19 @@
+---
+# defaults file for roles/env_ansible
+#
+env_ansible_user: harry
+
+env_ansible_rpms:
+  - "@python39"
+  - vim
+  - git
+  - podman
+  - tmux
+
+
+env_ansible_dot_files:
+  - { src: files/user_bashrc,    dest: .bashrc , mode: "0755" }
+  - { src: files/vimrc-python,   dest: .vimrc  , mode: "0755" }
+  - { src: files/vimrc-python,   dest: .vimrc-python  , mode: "0755" }
+  - { src: files/gitconfig,      dest: .gitconfig     , mode: "0755" }
+  - { src: files/vimrc-ansible,  dest: .vimrc-ansible , mode: "0755" }
