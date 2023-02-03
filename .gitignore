@@ -1,0 +1,11 @@
+
+./collections/ansible_collections/*
+
+- ./collections/ansible_collections/zilux
+
+
+collections/ansible_collections/ansible.posix-1.5.1.info/
+collections/ansible_collections/ansible/
+collections/ansible_collections/community.general-6.3.0.info/
+collections/ansible_collections/community/
+
